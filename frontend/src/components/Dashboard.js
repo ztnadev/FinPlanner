@@ -14,18 +14,24 @@ import {
   Pie,
   Cell,
 } from 'recharts';
+import RecurringBills from './RecurringBills';
 import './Dashboard.css';
+import './RecurringBills.css';
 
 const Dashboard = () => {
   const [stats, setStats] = useState(null);
+  const [recurringBills, setRecurringBills] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth() + 1);
   const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
+  const [showBillForm, setShowBillForm] = useState(false);
+  const [editingBill, setEditingBill] = useState(null);
 
   const COLORS = ['#667eea', '#f093fb', '#4facfe', '#00f2fe', '#fa709a', '#fee140', '#30cfd0', '#330867'];
 
   useEffect(() => {
     fetchStats();
+    fetchRecurringBills();
   }, [selectedMonth, selectedYear]);
 
   const fetchStats = async () => {
@@ -40,6 +46,60 @@ const Dashboard = () => {
     } finally {
       setLoading(false);
     }
+  };
+
+  const fetchRecurringBills = async () => {
+    try {
+      const response = await api.get('/api/recurring-bills/month', {
+        params: { month: selectedMonth, year: selectedYear },
+      });
+      setRecurringBills(response.data);
+    } catch (error) {
+      console.error('Error fetching recurring bills:', error);
+    }
+  };
+
+  const handleAddBill = () => {
+    setEditingBill(null);
+    setShowBillForm(true);
+  };
+
+  const handleEditBill = (bill) => {
+    setEditingBill(bill);
+    setShowBillForm(true);
+  };
+
+  const handleDeleteBill = async (billId) => {
+    if (!window.confirm('Are you sure you want to delete this recurring bill?')) {
+      return;
+    }
+
+    try {
+      await api.delete(`/api/recurring-bills/${billId}`);
+      fetchRecurringBills();
+    } catch (error) {
+      console.error('Error deleting recurring bill:', error);
+      alert('Error deleting recurring bill');
+    }
+  };
+
+  const handleBillSaved = () => {
+    fetchRecurringBills();
+  };
+
+  const getBillStatus = (bill) => {
+    const currentDate = new Date();
+    const currentDay = currentDate.getDate();
+    
+    if (bill.is_complete) {
+      return 'complete';
+    }
+    if (currentDate.getMonth() + 1 === selectedMonth && 
+        currentDate.getFullYear() === selectedYear &&
+        currentDay > bill.due_date) {
+      return 'overdue';
+    }
+    return 'pending';
   };
 
   const prepareMonthlyData = () => {
@@ -121,6 +181,69 @@ const Dashboard = () => {
         </div>
       </div>
 
+      <div className="recurring-bills-section">
+        <div className="recurring-bills-header">
+          <h2>Recurring Bills - {format(new Date(selectedYear, selectedMonth - 1), 'MMMM yyyy')}</h2>
+          <button className="btn-add-bill" onClick={handleAddBill}>
+            + Add Bill
+          </button>
+        </div>
+        {recurringBills.length > 0 ? (
+          <div className="recurring-bills-list">
+            {recurringBills.map((bill) => {
+              const status = getBillStatus(bill);
+              return (
+                <div key={bill.id} className={`recurring-bill-item ${status}`}>
+                  <div className="bill-info">
+                    <div className="bill-category">{bill.category_name}</div>
+                    <div className="bill-details">
+                      <span>Due: Day {bill.due_date}</span>
+                      {bill.description && <span>• {bill.description}</span>}
+                    </div>
+                  </div>
+                  <div className="bill-amount">${bill.amount.toFixed(2)}</div>
+                  <div className={`bill-status ${status}`}>
+                    {bill.is_complete ? (
+                      <>
+                        <span>✓ Complete</span>
+                        {bill.expense_count > 0 && (
+                          <span>({bill.expense_count} expense{bill.expense_count > 1 ? 's' : ''})</span>
+                        )}
+                      </>
+                    ) : (
+                      <span>{status === 'overdue' ? '⚠ Overdue' : 'Pending'}</span>
+                    )}
+                  </div>
+                  <div className="bill-actions">
+                    <button
+                      className="btn-icon edit"
+                      onClick={() => handleEditBill(bill)}
+                      title="Edit bill"
+                    >
+                      Edit
+                    </button>
+                    <button
+                      className="btn-icon delete"
+                      onClick={() => handleDeleteBill(bill.id)}
+                      title="Delete bill"
+                    >
+                      Delete
+                    </button>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        ) : (
+          <div className="no-bills">
+            <p>No recurring bills set up yet.</p>
+            <button className="btn-add-bill" onClick={handleAddBill}>
+              + Add Your First Bill
+            </button>
+          </div>
+        )}
+      </div>
+
       <div className="charts-container">
         <div className="chart-card">
           <h2>Monthly Income vs Expenses</h2>
@@ -164,6 +287,17 @@ const Dashboard = () => {
           )}
         </div>
       </div>
+
+      {showBillForm && (
+        <RecurringBills
+          bill={editingBill}
+          onClose={() => {
+            setShowBillForm(false);
+            setEditingBill(null);
+          }}
+          onSave={handleBillSaved}
+        />
+      )}
     </div>
   );
 };

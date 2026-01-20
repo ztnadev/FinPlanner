@@ -124,6 +124,15 @@
   font-size: 16px;
 }
 
+.error-message {
+  background: #fee;
+  color: #c33;
+  padding: 12px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  border: 1px solid #fcc;
+}
+
 @media (max-width: 768px) {
   .dashboard-header {
     flex-direction: column;

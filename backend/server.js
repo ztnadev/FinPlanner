@@ -9,6 +9,7 @@ const transactionRoutes = require('./routes/transactions');
 const categoryRoutes = require('./routes/categories');
 const dashboardRoutes = require('./routes/dashboard');
 const receiptRoutes = require('./routes/receipts');
+const recurringBillsRoutes = require('./routes/recurringBills');
 
 const app = express();
 
@@ -32,6 +33,7 @@ app.use('/api/transactions', transactionRoutes);
 app.use('/api/categories', categoryRoutes);
 app.use('/api/dashboard', dashboardRoutes);
 app.use('/api/receipts', receiptRoutes);
+app.use('/api/recurring-bills', recurringBillsRoutes);
 
 // Health check
 app.get('/api/health', (req, res) => {

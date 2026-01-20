@@ -57,12 +57,27 @@ async function migrate() {
       )
     `);
 
+    // Create recurring_bills table
+    await client.query(`
+      CREATE TABLE IF NOT EXISTS recurring_bills (
+        id SERIAL PRIMARY KEY,
+        user_id INTEGER REFERENCES users(id) ON DELETE CASCADE NOT NULL,
+        category_name VARCHAR(100) NOT NULL,
+        amount DECIMAL(12, 2) NOT NULL CHECK (amount > 0),
+        due_date INTEGER NOT NULL CHECK (due_date >= 1 AND due_date <= 31),
+        description TEXT,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      )
+    `);
+
     // Create indexes
     await client.query(`
       CREATE INDEX IF NOT EXISTS idx_transactions_user_id ON transactions(user_id);
       CREATE INDEX IF NOT EXISTS idx_transactions_date ON transactions(transaction_date);
       CREATE INDEX IF NOT EXISTS idx_transactions_type ON transactions(type);
       CREATE INDEX IF NOT EXISTS idx_categories_user_id ON categories(user_id);
+      CREATE INDEX IF NOT EXISTS idx_recurring_bills_user_id ON recurring_bills(user_id);
     `);
 
     await client.query('COMMIT');
