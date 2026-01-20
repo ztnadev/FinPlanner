@@ -1,0 +1,166 @@
+/* RecurringBills component uses modal styles from TransactionForm.css */
+/* Additional specific styles can be added here if needed */
+
+.recurring-bills-section {
+  background: white;
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  margin-bottom: 32px;
+}
+
+.recurring-bills-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.recurring-bills-header h2 {
+  font-size: 24px;
+  color: #2c3e50;
+  font-weight: 600;
+  margin: 0;
+}
+
+.btn-add-bill {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.btn-add-bill:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+}
+
+.recurring-bills-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.recurring-bill-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px;
+  border: 2px solid #e5e7eb;
+  border-radius: 8px;
+  background: #f9fafb;
+  transition: border-color 0.2s, background-color 0.2s;
+}
+
+.recurring-bill-item.complete {
+  background: #ecfdf5;
+  border-color: #10b981;
+}
+
+.recurring-bill-item.overdue {
+  background: #fef2f2;
+  border-color: #ef4444;
+}
+
+.recurring-bill-item.upcoming {
+  background: #fffbeb;
+  border-color: #f59e0b;
+}
+
+.bill-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.bill-category {
+  font-size: 16px;
+  font-weight: 600;
+  color: #2c3e50;
+}
+
+.bill-details {
+  display: flex;
+  gap: 16px;
+  font-size: 14px;
+  color: #6b7280;
+}
+
+.bill-amount {
+  font-size: 18px;
+  font-weight: 600;
+  color: #6366f1;
+  margin-right: 16px;
+}
+
+.bill-status {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.bill-status.complete {
+  color: #10b981;
+}
+
+.bill-status.pending {
+  color: #f59e0b;
+}
+
+.bill-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.btn-icon {
+  background: none;
+  border: 1px solid #e5e7eb;
+  padding: 8px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.2s, border-color 0.2s;
+  color: #374151;
+}
+
+.btn-icon:hover {
+  background: #f3f4f6;
+  border-color: #d1d5db;
+}
+
+.btn-icon.edit {
+  color: #6366f1;
+  border-color: #6366f1;
+}
+
+.btn-icon.edit:hover {
+  background: #eef2ff;
+}
+
+.btn-icon.delete {
+  color: #ef4444;
+  border-color: #ef4444;
+}
+
+.btn-icon.delete:hover {
+  background: #fef2f2;
+}
+
+.no-bills {
+  text-align: center;
+  padding: 40px;
+  color: #9ca3af;
+  font-size: 16px;
+}
+
+.no-bills p {
+  margin: 0 0 16px 0;
+}
