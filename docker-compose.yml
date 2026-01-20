@@ -35,8 +35,8 @@ services:
       UPLOAD_DIR: ./uploads
     volumes:
       - ./backend/uploads:/app/uploads
-    ports:
-      - "5000:5000"
+    # Backend port is not exposed to host - only accessible via Docker network
+    # Frontend nginx proxies requests to backend:5000
     depends_on:
       postgres:
         condition: service_healthy
@@ -51,8 +51,8 @@ services:
       - "80:80"
     depends_on:
       - backend
-    environment:
-      - REACT_APP_API_URL=http://localhost:5000
+    # REACT_APP_API_URL is not set, so frontend uses relative paths
+    # Nginx proxies /api and /uploads to backend:5000
 
 volumes:
   postgres_data:

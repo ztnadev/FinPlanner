@@ -60,8 +60,9 @@ const Transactions = () => {
 
   const getReceiptUrl = (receiptPath) => {
     if (!receiptPath) return null;
+    // Use relative path - nginx proxies /uploads to backend:5000
     if (receiptPath.startsWith('http')) return receiptPath;
-    return `${process.env.REACT_APP_API_URL || 'http://localhost:5000'}${receiptPath}`;
+    return receiptPath;
   };
 
   if (loading) {

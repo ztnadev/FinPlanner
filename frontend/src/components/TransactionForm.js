@@ -30,9 +30,10 @@ const TransactionForm = ({ transaction, onClose }) => {
         receiptPath: transaction.receipt_path || '',
       });
       if (transaction.receipt_path) {
+        // Use relative path - nginx proxies /uploads to backend:5000
         const receiptUrl = transaction.receipt_path.startsWith('http')
           ? transaction.receipt_path
-          : `${process.env.REACT_APP_API_URL || 'http://localhost:5000'}${transaction.receipt_path}`;
+          : transaction.receipt_path;
         setReceiptPreview(receiptUrl);
       }
     }
